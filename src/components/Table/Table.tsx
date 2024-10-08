@@ -14,7 +14,7 @@ export const Table = <RowModel extends ValidRowModel = ValidRowModel>({
   rows,
   onRowClick,
 }: {
-  columns: ColDef<RowModel>[];
+  columns: readonly ColDef<RowModel>[];
   rows: RowModel[];
   onRowClick?: (row: RowModel) => void;
 }) => {

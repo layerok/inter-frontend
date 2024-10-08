@@ -37,14 +37,14 @@ const createClient = (): Client => {
     },
   );
 
-  const onUnauthenticated = () => {
-    // todo: emit user unauthenticated
-    return Promise.resolve();
-  };
-
-  createAuthRefreshInterceptor(apiClient, onUnauthenticated, {
-    statusCodes: [401],
-  });
+  // const onUnauthenticated = () => {
+  //   // todo: emit user unauthenticated
+  //   return Promise.resolve();
+  // };
+  //
+  // createAuthRefreshInterceptor(apiClient, onUnauthenticated, {
+  //   statusCodes: [401],
+  // });
 
   return apiClient;
 };

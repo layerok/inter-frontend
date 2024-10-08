@@ -6,8 +6,8 @@ import { ChangeEventHandler, FormEventHandler, useState } from "react";
 export const LoginView = () => {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("admin@example.com");
+  const [password, setPassword] = useState("password");
 
   const { mutate: login } = useLogin();
 
@@ -36,10 +36,10 @@ export const LoginView = () => {
     );
   };
   return (
-    <div>
+    <div style={rootStyles}>
       <div>Login</div>
       <div>
-        <form onSubmit={handleSubmit}>
+        <form style={formStyles} onSubmit={handleSubmit}>
           <input
             value={email}
             type="email"
@@ -58,3 +58,18 @@ export const LoginView = () => {
     </div>
   );
 };
+
+const rootStyles = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  minHeight: "100vh",
+} as const;
+
+const formStyles = {
+  display: "flex",
+  width: 200,
+  flexDirection: "column",
+  gap: 10,
+} as const;
