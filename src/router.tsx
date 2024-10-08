@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import { HomeView } from "src/admin/views/HomeView.tsx";
+import { AdminView } from "src/admin/views/AdminView.tsx";
 import { adminRoute } from "src/constants/routes.constants.ts";
 import { AdminLayout } from "src/components/AdminLayout/AdminLayout.tsx";
 import { LoginView } from "src/auth/views/LoginView.tsx";
@@ -18,7 +18,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomeView />,
+        element: <AdminView />,
       },
       dashboard,
       ...userModule.routeObjects,
