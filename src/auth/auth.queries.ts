@@ -13,7 +13,7 @@ export const authQueries = {
     queryOptions({
       queryKey: ["auth", "user"] as const,
       queryFn: async ({ signal }) => {
-        const response = await apiClient.getCurrentUser(null, null, {
+        const response = await apiClient.getLoggedInUser(null, null, {
           signal,
           skipAuthRefresh,
         } as ExtendedAxiosConfig);

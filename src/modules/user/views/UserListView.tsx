@@ -23,6 +23,11 @@ const columns = [
     name: "Email",
     width: 150,
   },
+  {
+    field: "role",
+    name: "Role",
+    width: 150,
+  },
 ] as const;
 
 export function UserListRoute() {
@@ -49,6 +54,7 @@ export function UserListRoute() {
     id: resource.id,
     name: resource.name,
     email: resource.email,
+    role: resource.role,
   }));
 
   const handleRowClick = (row: ValidRowModel) => {
@@ -88,13 +94,12 @@ const ShowingRecordsRangeText = ({
   pageSize: number;
   totalRows: number;
 }) => {
-  const showingRange = [
-    Math.max(page - 1, 0) * pageSize + 1,
-    Math.min(page * pageSize, totalRows),
-  ];
+  const start = Math.min(Math.max(page - 1, 0) * pageSize + 1, totalRows);
+  const end = Math.min(page * pageSize, totalRows);
+  const range = [start, end];
   return (
     <div>
-      Showing {showingRange.join("-")} records out of {totalRows}
+      Showing {range.join("-")} records out of {totalRows}
     </div>
   );
 };

@@ -45,9 +45,9 @@ declare namespace Components {
   namespace Schemas {
     export interface UserResource {
       id: string;
-      gid: string;
       name: string;
       email: string;
+      role: string;
       created_at: string;
       updated_at: string;
     }
@@ -55,6 +55,12 @@ declare namespace Components {
       email: string;
       password: string;
       remember_me?: boolean;
+    }
+    export interface UserStoreRequest {
+      name?: string;
+      password?: string;
+      email?: string;
+      role?: string;
     }
     export interface PaginatedSetLinks {
       first: string | null;
@@ -86,7 +92,12 @@ declare namespace Paths {
     export interface PathParameters {
       user: Parameters.User;
     }
-    export interface RequestBody {}
+    export interface RequestBody {
+      name?: string;
+      email?: string;
+      password?: string;
+      role?: string;
+    }
     namespace Responses {
       export interface $200 {
         data: Components.Schemas.UserResource;

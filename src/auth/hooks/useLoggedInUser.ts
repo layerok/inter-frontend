@@ -18,7 +18,7 @@ export const useLoggedInUser = (
   > = {},
 ) => {
   return useQuery({
-    ...authQueries.user({ skipAuthRefresh: false }),
+    ...authQueries.loggedInUser({ skipAuthRefresh: false }),
     ...options,
   });
 };

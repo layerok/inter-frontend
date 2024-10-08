@@ -3,16 +3,21 @@ import { Link } from "react-router-dom";
 import { css } from "@emotion/react";
 import { dashboardRoutePath } from "src/dashboard/dashboard.constants.ts";
 import { userModule } from "src/modules/user/user.module.ts";
+import { useLoggedInUser } from "src/auth/hooks/useLoggedInUser.ts";
 
 export const Menu = () => {
+  const { data: user } = useLoggedInUser();
+
   return (
     <nav css={rootStyles}>
       <Link css={linkStyles} to={dashboardRoutePath}>
         Dashboard
       </Link>
-      <Link css={linkStyles} to={userModule.routes.layout.path}>
-        Users
-      </Link>
+      {user?.data.role === "admin" && (
+        <Link css={linkStyles} to={userModule.routes.layout.path}>
+          Users
+        </Link>
+      )}
     </nav>
   );
 };

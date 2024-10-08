@@ -10,6 +10,7 @@ export function UserCreateRoute() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -23,6 +24,10 @@ export function UserCreateRoute() {
 
   const handlePasswordChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     setPassword(e.currentTarget.value);
+  };
+
+  const handleRoleChange: ChangeEventHandler<HTMLSelectElement> = (e) => {
+    setRole(e.currentTarget.value);
   };
 
   const { mutate: createUser } = useMutation({
@@ -45,6 +50,7 @@ export function UserCreateRoute() {
           name,
           email,
           password,
+          role,
         },
       },
       {
@@ -80,6 +86,11 @@ export function UserCreateRoute() {
           value={password}
           onChange={handlePasswordChange}
         />
+        <select name={"role"} value={role} onChange={handleRoleChange}>
+          <option value={""}>Select role</option>
+          <option value={"admin"}>admin</option>
+          <option value={"moderator"}>moderator</option>
+        </select>
         <button onClick={handleCreate}>Create</button>
       </form>
     </div>
