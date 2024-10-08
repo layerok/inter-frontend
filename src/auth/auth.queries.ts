@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import type { AxiosRequestConfig } from "axios";
-import { apiClient } from "src/clients/apiClient.ts";
+import { apiClient } from "src/api-client/apiClient.ts";
 
 type ExtendedAxiosConfig = AxiosRequestConfig & {
   skipAuthRefresh?: boolean;

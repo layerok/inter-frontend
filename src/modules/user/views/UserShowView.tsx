@@ -9,7 +9,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { userMutations } from "src/modules/user/user.mutations.ts";
 import { useNavigate, useParams } from "react-router-dom";
 import { userQueries } from "src/modules/user/user.queries.ts";
-import { userModule } from "src/modules/user/user.module.ts";
+import { userListPath } from "src/modules/user/user.constants.ts";
 
 export function UserShowRoute() {
   const params = useParams();
@@ -68,7 +68,7 @@ export function UserShowRoute() {
       },
       {
         onSuccess: () => {
-          navigate(userModule.routes.layout.path);
+          navigate(userListPath);
         },
       },
     );
@@ -86,7 +86,7 @@ export function UserShowRoute() {
       },
       {
         onSuccess: () => {
-          navigate(userModule.routes.layout.path);
+          navigate(userListPath);
         },
       },
     );

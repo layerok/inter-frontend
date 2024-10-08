@@ -2,8 +2,12 @@ import { Link } from "react-router-dom";
 
 import { css } from "@emotion/react";
 import { dashboardRoutePath } from "src/dashboard/dashboard.constants.ts";
-import { userModule } from "src/modules/user/user.module.ts";
 import { useLoggedInUser } from "src/auth/hooks/useLoggedInUser.ts";
+import { userListPath } from "src/modules/user/user.constants.ts";
+import { userMenu } from "src/modules/user/user.menu.tsx";
+import { MenuItem } from "src/components/AdminLayout/AdminLayout.types.ts";
+
+const items: MenuItem[] = [...userMenu];
 
 export const Menu = () => {
   const { data: user } = useLoggedInUser();
@@ -13,11 +17,13 @@ export const Menu = () => {
       <Link css={linkStyles} to={dashboardRoutePath}>
         Dashboard
       </Link>
-      {user?.data.role === "admin" && (
-        <Link css={linkStyles} to={userModule.routes.layout.path}>
-          Users
-        </Link>
-      )}
+      {items
+        .filter((item) => user && item.isAllowed(user.data))
+        .map((item) => (
+          <Link css={linkStyles} to={userListPath}>
+            {item.title}
+          </Link>
+        ))}
     </nav>
   );
 };

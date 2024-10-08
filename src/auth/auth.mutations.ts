@@ -1,6 +1,6 @@
 import type { Paths } from "@intersog/js-sdk";
 import type { AxiosRequestConfig } from "axios";
-import { apiClient } from "src/clients/apiClient.ts";
+import { apiClient } from "src/api-client/apiClient.ts";
 
 export const authMutations = {
   logout: {

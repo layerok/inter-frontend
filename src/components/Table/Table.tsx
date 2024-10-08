@@ -5,6 +5,7 @@ export type ColDef<RowModel extends ValidRowModel = ValidRowModel> = {
   field: keyof RowModel;
   name: ReactNode;
   width?: number;
+  renderCell?: (value: any, row: RowModel) => ReactNode;
 };
 
 export type ValidRowModel = Record<string, ReactNode>;
@@ -52,7 +53,9 @@ export const Table = <RowModel extends ValidRowModel = ValidRowModel>({
                 css={bodyCellStyles}
                 key={index}
               >
-                {row[column.field]}
+                {column.renderCell
+                  ? column.renderCell(row?.[column.field], row)
+                  : row[column.field]}
               </div>
             ))}
           </div>
@@ -73,7 +76,6 @@ const headerRowStyles = css`
 const bodyRowStyles = css`
   display: flex;
   border-top: 1px solid var(--border-color);
-  cursor: pointer;
 `;
 const bodyCellStyles = css`
   padding: 2px 8px;

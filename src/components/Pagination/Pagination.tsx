@@ -1,5 +1,8 @@
 import { ChangeEventHandler, useState } from "react";
-import { clamp } from "src/utils/clamp.ts";
+
+const clamp = (value: number, min: number, max: number) => {
+  return Math.min(Math.max(value, min), max);
+};
 
 export const Pagination = ({
   page,

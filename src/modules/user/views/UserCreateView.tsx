@@ -3,7 +3,7 @@ import { ChangeEventHandler, FormEventHandler, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { userQueries } from "src/modules/user/user.queries.ts";
 import { userMutations } from "src/modules/user/user.mutations.ts";
-import { userModule } from "src/modules/user/user.module.ts";
+import { userListPath, UserRoles } from "src/modules/user/user.constants.ts";
 
 export function UserCreateRoute() {
   const params = useParams();
@@ -55,7 +55,7 @@ export function UserCreateRoute() {
       },
       {
         onSuccess: () => {
-          navigate(userModule.routes.layout.path);
+          navigate(userListPath);
         },
       },
     );
@@ -88,8 +88,9 @@ export function UserCreateRoute() {
         />
         <select name={"role"} value={role} onChange={handleRoleChange}>
           <option value={""}>Select role</option>
-          <option value={"admin"}>admin</option>
-          <option value={"moderator"}>moderator</option>
+          {[UserRoles.Admin, UserRoles.Moderator].map((role) => (
+            <option value={role}>{role}</option>
+          ))}
         </select>
         <button onClick={handleCreate}>Create</button>
       </form>

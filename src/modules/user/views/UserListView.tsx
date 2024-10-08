@@ -1,13 +1,37 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "src/components/Button/Button.tsx";
-import { userModule } from "src/modules/user/user.module.ts";
-import { Table, ValidRowModel } from "src/components/Table/Table.tsx";
+import { ColDef, Table } from "src/components/Table/Table.tsx";
 import { useQuery } from "@tanstack/react-query";
 import { userQueries } from "src/modules/user/user.queries.ts";
 import { useState } from "react";
 import { Pagination } from "src/components/Pagination/Pagination.tsx";
+import {
+  userCreatePath,
+  userShowPath,
+} from "src/modules/user/user.constants.ts";
 
-const columns = [
+type UserRowModel = {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  actions: string;
+};
+
+const ActionCell = (_: any, row: UserRowModel) => {
+  const navigate = useNavigate();
+  return (
+    <button
+      onClick={() => {
+        navigate(userShowPath.replace(":id", row.id));
+      }}
+    >
+      Edit
+    </button>
+  );
+};
+
+const columns: ColDef<UserRowModel>[] = [
   {
     field: "id",
     name: "ID",
@@ -27,6 +51,12 @@ const columns = [
     field: "role",
     name: "Role",
     width: 150,
+  },
+  {
+    field: "actions",
+    name: "Actions",
+    width: 150,
+    renderCell: ActionCell,
   },
 ] as const;
 
@@ -55,14 +85,11 @@ export function UserListRoute() {
     name: resource.name,
     email: resource.email,
     role: resource.role,
+    actions: "",
   }));
 
-  const handleRowClick = (row: ValidRowModel) => {
-    navigate(userModule.routes.show.path.replace(":id", String(row.id)));
-  };
-
   const goToCreatePage = () => {
-    navigate(userModule.routes.create.path);
+    navigate(userCreatePath);
   };
 
   return (
@@ -79,7 +106,7 @@ export function UserListRoute() {
         </div>
       </div>
       <div style={tableContainerStyles}>
-        <Table onRowClick={handleRowClick} columns={columns} rows={rows} />
+        <Table columns={columns} rows={rows} />
       </div>
     </div>
   );
