@@ -33,7 +33,7 @@ export const Pagination = ({
     setEditMode(false);
   };
   const handleInputFocus = () => {
-    setEditMode(false);
+    setEditMode(true);
   };
   const isDecrementButtonDisabled = page === 1;
   const isIncrementButtonDisabled = page === max;
