@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 
 import { css } from "@emotion/react";
-import { dashboardRoutePath } from "src/dashboard/dashboard.constants.ts";
+import { dashboardRoutePath } from "src/admin/admin.constants.ts";
 import { useLoggedInUser } from "src/auth/hooks/useLoggedInUser.ts";
-import { userListPath } from "src/modules/user/user.constants.ts";
-import { userMenu } from "src/modules/user/user.menu.tsx";
-import { MenuItem } from "src/components/AdminLayout/AdminLayout.types.ts";
+import { userListPath } from "src/admin/modules/user/user.constants.ts";
+import { userMenu } from "src/admin/modules/user/user.menu.tsx";
+import { MenuItem } from "src/admin/views/AdminLayoutView/AdminLayoutView.types.ts";
 
 const items: MenuItem[] = [...userMenu];
 

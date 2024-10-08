@@ -6,10 +6,10 @@ import {
   useState,
 } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { userMutations } from "src/modules/user/user.mutations.ts";
+import { userMutations } from "src/admin/modules/user/user.mutations.ts";
 import { useNavigate, useParams } from "react-router-dom";
-import { userQueries } from "src/modules/user/user.queries.ts";
-import { userListPath } from "src/modules/user/user.constants.ts";
+import { userQueries } from "src/admin/modules/user/user.queries.ts";
+import { userListPath } from "src/admin/modules/user/user.constants.ts";
 
 export function UserShowRoute() {
   const params = useParams();

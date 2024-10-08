@@ -1,9 +1,12 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { ChangeEventHandler, FormEventHandler, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { userQueries } from "src/modules/user/user.queries.ts";
-import { userMutations } from "src/modules/user/user.mutations.ts";
-import { userListPath, UserRoles } from "src/modules/user/user.constants.ts";
+import { userQueries } from "src/admin/modules/user/user.queries.ts";
+import { userMutations } from "src/admin/modules/user/user.mutations.ts";
+import {
+  userListPath,
+  UserRoles,
+} from "src/admin/modules/user/user.constants.ts";
 
 export function UserCreateRoute() {
   const params = useParams();

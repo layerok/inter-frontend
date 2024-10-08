@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { ApiClientContext } from "src/api-client/ApiClientProvider.tsx";
+import { ApiClientContext } from "src/lib/js-sdk/ApiClientProvider.tsx";
 
 export const useApiClient = () => {
   const context = useContext(ApiClientContext);

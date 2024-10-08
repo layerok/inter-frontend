@@ -13,7 +13,6 @@ export const ApiClientProvider = ({
   client: Client;
 }>) => {
   const navigate = useNavigate();
-  console.log("render");
 
   useEffect(() => {
     const id = client.interceptors.request.use((config) => {
@@ -52,10 +51,8 @@ export const ApiClientProvider = ({
   }, [client]);
 
   useEffect(() => {
-    console.log("set interceptor");
     const onUnauthenticated = () => {
       navigate(loginRoute);
-      console.log("authenticated");
       return Promise.resolve();
     };
 

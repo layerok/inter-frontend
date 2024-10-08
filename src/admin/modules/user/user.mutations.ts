@@ -1,6 +1,6 @@
 import { Paths } from "@intersog/js-sdk";
 import { AxiosRequestConfig } from "axios";
-import { apiClient } from "src/api-client/apiClient.ts";
+import { apiClient } from "src/apiClient.ts";
 
 export const userMutations = {
   updateDetail: {

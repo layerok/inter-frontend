@@ -1,13 +1,14 @@
 import { createBrowserRouter, Outlet } from "react-router-dom";
-import { AdminView } from "src/admin/views/AdminView.tsx";
-import { adminRoute } from "src/constants/routes.constants.ts";
-import { AdminLayout } from "src/components/AdminLayout/AdminLayout.tsx";
+import { AdminHomeView } from "src/admin/views/AdminHomeView.tsx";
+import { adminRoutePath } from "src/admin/admin.constants.ts";
+import { AdminLayoutView } from "src/admin/views/AdminLayoutView/AdminLayoutView.tsx";
 import { LoginView } from "src/auth/views/LoginView.tsx";
-import { dashboard } from "src/dashboard/dashboard.route.tsx";
 import { loginRoute } from "src/auth/auth.constants.ts";
-import { ApiClientProvider } from "src/api-client/ApiClientProvider.tsx";
-import { apiClient } from "src/api-client/apiClient.ts";
-import { userRoutes } from "src/modules/user/user.routes.ts";
+import { ApiClientProvider } from "src/lib/js-sdk/ApiClientProvider.tsx";
+import { apiClient } from "src/apiClient.ts";
+import { userRoutes } from "src/admin/modules/user/user.routes.ts";
+import { dashboardRoutePath } from "src/admin/admin.constants.ts";
+import { DashboardView } from "src/admin/views/DashboardView.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -22,14 +23,17 @@ export const router = createBrowserRouter([
         element: <LoginView />,
       },
       {
-        path: adminRoute,
-        element: <AdminLayout />,
+        path: adminRoutePath,
+        element: <AdminLayoutView />,
         children: [
           {
             index: true,
-            element: <AdminView />,
+            element: <AdminHomeView />,
           },
-          dashboard,
+          {
+            path: dashboardRoutePath,
+            element: <DashboardView />,
+          },
           ...userRoutes,
         ],
       },

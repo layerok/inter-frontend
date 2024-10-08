@@ -1,9 +1,9 @@
 import { Outlet } from "react-router-dom";
-import { Sidebar } from "src/components/AdminLayout/components/Sidebar/Sidebar.tsx";
+import { Sidebar } from "./components/Sidebar/Sidebar.tsx";
 
 import { css } from "@emotion/react";
 
-export function AdminLayout() {
+export function AdminLayoutView() {
   return (
     <div css={layoutStyles}>
       <header css={headerStyles}>John Doe</header>

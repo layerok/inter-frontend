@@ -2,13 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "src/components/Button/Button.tsx";
 import { ColDef, Table } from "src/components/Table/Table.tsx";
 import { useQuery } from "@tanstack/react-query";
-import { userQueries } from "src/modules/user/user.queries.ts";
+import { userQueries } from "src/admin/modules/user/user.queries.ts";
 import { useState } from "react";
 import { Pagination } from "src/components/Pagination/Pagination.tsx";
 import {
   userCreatePath,
   userShowPath,
-} from "src/modules/user/user.constants.ts";
+} from "src/admin/modules/user/user.constants.ts";
 
 type UserRowModel = {
   id: string;
@@ -20,15 +20,10 @@ type UserRowModel = {
 
 const ActionCell = (_: any, row: UserRowModel) => {
   const navigate = useNavigate();
-  return (
-    <button
-      onClick={() => {
-        navigate(userShowPath.replace(":id", row.id));
-      }}
-    >
-      Edit
-    </button>
-  );
+  const openDetailedView = () => {
+    navigate(userShowPath.replace(":id", row.id));
+  };
+  return <button onClick={openDetailedView}>Edit</button>;
 };
 
 const columns: ColDef<UserRowModel>[] = [
@@ -92,16 +87,18 @@ export function UserListRoute() {
     navigate(userCreatePath);
   };
 
+  const showingRange = calculateShowingRecordsRange({
+    page,
+    pageSize,
+    totalRows,
+  });
+
   return (
     <div>
       <div style={toolbarStyles}>
         <Button onClick={goToCreatePage}>create new user</Button>
         <div style={paginationContainer}>
-          <ShowingRecordsRangeText
-            page={page}
-            pageSize={pageSize}
-            totalRows={totalRows}
-          />
+          Showing {showingRange.join("-")} records out of {totalRows}
           <Pagination page={page} max={lastPage} onPageChange={setPage} />
         </div>
       </div>
@@ -112,7 +109,7 @@ export function UserListRoute() {
   );
 }
 
-const ShowingRecordsRangeText = ({
+const calculateShowingRecordsRange = ({
   page,
   pageSize,
   totalRows,
@@ -123,12 +120,7 @@ const ShowingRecordsRangeText = ({
 }) => {
   const start = Math.min(Math.max(page - 1, 0) * pageSize + 1, totalRows);
   const end = Math.min(page * pageSize, totalRows);
-  const range = [start, end];
-  return (
-    <div>
-      Showing {range.join("-")} records out of {totalRows}
-    </div>
-  );
+  return [start, end];
 };
 
 const paginationContainer = {

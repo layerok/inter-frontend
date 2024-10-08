@@ -1,6 +1,6 @@
 import { useLogin } from "src/auth/hooks/useLogin.ts";
 import { useNavigate } from "react-router-dom";
-import { adminRoute } from "src/constants/routes.constants.ts";
+import { adminRoutePath } from "src/admin/admin.constants.ts";
 import { ChangeEventHandler, FormEventHandler, useState } from "react";
 
 export const LoginView = () => {
@@ -30,7 +30,7 @@ export const LoginView = () => {
       },
       {
         onSuccess: () => {
-          navigate(adminRoute);
+          navigate(adminRoutePath);
         },
       },
     );

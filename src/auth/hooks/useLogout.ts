@@ -6,7 +6,7 @@ import {
 } from "@tanstack/react-query";
 import type { Paths } from "@intersog/js-sdk";
 import type { AxiosRequestConfig } from "axios";
-import { authMutations } from "src/auth/auth.queries.ts";
+import { authMutations } from "src/auth/auth.mutations";
 
 export const useLogout = (
   options: UseMutationOptions<

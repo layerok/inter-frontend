@@ -1,6 +1,6 @@
-import { adminRoute } from "src/constants/routes.constants.ts";
+import { adminRoutePath } from "src/admin/admin.constants.ts";
 
-const modulePath = `${adminRoute}/users`;
+const modulePath = `${adminRoutePath}/users`;
 
 export const userLayoutPath = `${modulePath}`;
 export const userListPath = `${modulePath}/`;
