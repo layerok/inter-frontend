@@ -1,10 +1,14 @@
 import { css } from "@emotion/react";
-import { ChangeEventHandler, useEffect, useState } from "react";
+import {
+  ChangeEventHandler,
+  FormEventHandler,
+  useEffect,
+  useState,
+} from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { userMutations } from "src/modules/user/user.mutations.ts";
 import { useNavigate, useParams } from "react-router-dom";
 import { userQueries } from "src/modules/user/user.queries.ts";
-
 import { userModule } from "src/modules/user/user.module.ts";
 
 export function UserShowRoute() {
@@ -14,10 +18,6 @@ export function UserShowRoute() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const handleNameChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setName(e.currentTarget.value);
-  };
-
   const { data: userData, isLoading } = useQuery({
     ...userQueries.detail({
       user: params.id!,
@@ -26,9 +26,27 @@ export function UserShowRoute() {
 
   const { mutate: updateUser } = useMutation({
     ...userMutations.updateDetail,
+    onSuccess: (data, variables) => {
+      queryClient.setQueryData(
+        userQueries.detail({
+          user: variables.params.user,
+        }).queryKey,
+        data,
+      );
+      return queryClient.invalidateQueries({
+        queryKey: userQueries.lists(),
+        refetchType: "all",
+      });
+    },
   });
   const { mutate: deleteUser } = useMutation({
     ...userMutations.deleteDetail,
+    onSuccess: () => {
+      return queryClient.invalidateQueries({
+        queryKey: userQueries.lists(),
+        refetchType: "all",
+      });
+    },
   });
 
   useEffect(() => {
@@ -37,75 +55,68 @@ export function UserShowRoute() {
     }
   }, [userData]);
 
+  const handleNameChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setName(e.currentTarget.value);
+  };
+
+  const handleDelete = () => {
+    deleteUser(
+      {
+        params: {
+          user: params.id!,
+        },
+      },
+      {
+        onSuccess: () => {
+          navigate(userModule.routes.layout.path);
+        },
+      },
+    );
+  };
+
+  const handleUpdate = () => {
+    updateUser(
+      {
+        params: {
+          user: params.id!,
+        },
+        data: {
+          name,
+        },
+      },
+      {
+        onSuccess: () => {
+          navigate(userModule.routes.layout.path);
+        },
+      },
+    );
+  };
+
+  const handleFormSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+  };
+
   if (isLoading) {
     return "loading..";
   }
 
   return (
     <div css={detailFormLayout}>
-      <form
-        style={{
-          width: 150,
-          gap: 10,
-          display: "flex",
-          flexDirection: "column",
-        }}
-        onSubmit={(e) => {
-          e.preventDefault();
-        }}
-      >
+      <form style={formStyles} onSubmit={handleFormSubmit}>
         <input name={"name"} value={name} onChange={handleNameChange} />
-        <button
-          onClick={() => {
-            updateUser(
-              {
-                params: {
-                  user: params.id!,
-                },
-                data: {
-                  name,
-                },
-              },
-              {
-                onSuccess: () => {
-                  navigate(userModule.routes.layout.path);
-                  queryClient.invalidateQueries({
-                    queryKey: userQueries.lists(),
-                    type: "all",
-                  });
-                },
-              },
-            );
-          }}
-        >
-          Save
-        </button>
-        <button
-          onClick={() => {
-            deleteUser(
-              {
-                params: {
-                  user: params.id!,
-                },
-              },
-              {
-                onSuccess: () => {
-                  navigate(userModule.routes.layout.path);
-                  queryClient.invalidateQueries({
-                    queryKey: userQueries.lists(),
-                    type: "all",
-                  });
-                },
-              },
-            );
-          }}
-        >
-          Delete
-        </button>
+        <button onClick={handleUpdate}>Save</button>
+        <button onClick={handleDelete}>Delete</button>
       </form>
     </div>
   );
 }
+
+const formStyles = {
+  width: 150,
+  gap: 10,
+  display: "flex",
+  flexDirection: "column",
+} as const;
 
 const detailFormLayout = css({
   flexGrow: 1,

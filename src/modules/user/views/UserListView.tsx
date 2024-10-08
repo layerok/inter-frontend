@@ -21,6 +21,8 @@ export function UserListRoute() {
     email: resource.email,
   }));
 
+  console.log("user", userData);
+
   return (
     <div>
       <div>

@@ -5,6 +5,7 @@ import { apiClient } from "src/clients/apiClient.ts";
 
 export const userQueries = {
   all: ["users"] as const,
+  lists: () => [...userQueries.all, "list"] as const,
   list: (
     params: Paths.GetUsers.QueryParameters,
     reqConfig?: AxiosRequestConfig,
@@ -20,7 +21,6 @@ export const userQueries = {
       },
     });
   },
-  lists: () => [...userQueries.all, "list"] as const,
   details: () => [...userQueries.all, "detail"] as const,
   detail: (
     params: Paths.GetUser.PathParameters,
