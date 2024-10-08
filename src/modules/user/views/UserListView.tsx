@@ -4,6 +4,8 @@ import { userModule } from "src/modules/user/user.module.ts";
 import { Table, ValidRowModel } from "src/components/Table/Table.tsx";
 import { useQuery } from "@tanstack/react-query";
 import { userQueries } from "src/modules/user/user.queries.ts";
+import { useState } from "react";
+import { Pagination } from "src/components/Pagination/Pagination.tsx";
 
 const columns = [
   {
@@ -25,7 +27,19 @@ const columns = [
 
 export function UserListRoute() {
   const navigate = useNavigate();
-  const { data: userData, isLoading } = useQuery(userQueries.list({}));
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(5);
+  const { data: userData, isLoading } = useQuery(
+    userQueries.list({
+      page: {
+        number: page,
+        size: pageSize,
+      },
+    }),
+  );
+
+  const lastPage = userData?.meta.last_page ?? 1;
+  const totalRows = userData?.meta?.total ?? 0;
 
   if (isLoading) {
     return "...loading";
@@ -47,8 +61,16 @@ export function UserListRoute() {
 
   return (
     <div>
-      <div>
+      <div style={toolbarStyles}>
         <Button onClick={goToCreatePage}>create new user</Button>
+        <div style={paginationContainer}>
+          <ShowingRecordsRangeText
+            page={page}
+            pageSize={pageSize}
+            totalRows={totalRows}
+          />
+          <Pagination page={page} max={lastPage} onPageChange={setPage} />
+        </div>
       </div>
       <div style={tableContainerStyles}>
         <Table onRowClick={handleRowClick} columns={columns} rows={rows} />
@@ -56,6 +78,36 @@ export function UserListRoute() {
     </div>
   );
 }
+
+const ShowingRecordsRangeText = ({
+  page,
+  pageSize,
+  totalRows,
+}: {
+  page: number;
+  pageSize: number;
+  totalRows: number;
+}) => {
+  const showingRange = [
+    Math.max(page - 1, 0) * pageSize + 1,
+    Math.min(page * pageSize, totalRows),
+  ];
+  return (
+    <div>
+      Showing {showingRange.join("-")} records out of {totalRows}
+    </div>
+  );
+};
+
+const paginationContainer = {
+  display: "flex",
+  gap: 10,
+};
+
+const toolbarStyles = {
+  display: "flex",
+  justifyContent: "space-between",
+};
 
 const tableContainerStyles = {
   marginTop: 10,

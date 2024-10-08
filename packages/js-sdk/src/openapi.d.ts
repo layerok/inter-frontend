@@ -56,6 +56,26 @@ declare namespace Components {
       password: string;
       remember_me?: boolean;
     }
+    export interface PaginatedSetLinks {
+      first: string | null;
+      last: string | null;
+      prev: string | null;
+      next: string | null;
+    }
+    export interface PaginatedSetMeta {
+      current_page: number;
+      from: number | null;
+      last_page: number;
+      links: {
+        url: string | null;
+        label: string;
+        active: boolean;
+      }[];
+      path: string | null;
+      per_page: number;
+      to: number | null;
+      total: number;
+    }
   }
 }
 declare namespace Paths {
@@ -150,36 +170,11 @@ declare namespace Paths {
     }
   }
   namespace GetUsers {
-    namespace Parameters {
-      export interface Filter {
-        id?: string;
-        name?: string;
-        is_superuser?: string;
-      }
-      export interface FilterMode {
-        id?: TextFilterMode[];
-        name?: TextFilterMode[];
-        is_superuser?: TextFilterMode[];
-      }
-      export type Include = ("userData" | "permissions")[] | string;
-      export type Sort =
-        | string
-        | (
-            | "id"
-            | "name"
-            | "is_superuser"
-            | "created_at"
-            | "-id"
-            | "-name"
-            | "-is_superuser"
-            | "-created_at"
-          )[];
-    }
     export interface QueryParameters {
-      sort?: Parameters.Sort;
-      include?: Parameters.Include;
-      filter?: Parameters.Filter;
-      filter_mode?: Parameters.FilterMode;
+      page?: {
+        number?: number;
+        size?: number;
+      };
     }
     namespace Responses {
       export interface $200 {
