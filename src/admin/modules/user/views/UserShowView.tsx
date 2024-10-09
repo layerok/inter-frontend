@@ -14,6 +14,7 @@ import {
   UserRoles,
 } from "src/admin/modules/user/user.constants.ts";
 import { invariant } from "src/utils/invariant.ts";
+import { Button } from "src/components/Button/Button.tsx";
 
 export function UserShowRoute() {
   const [searchParams] = useSearchParams();
@@ -161,8 +162,12 @@ export function UserShowRoute() {
             ))}
           </select>
         </div>
-        <button onClick={handleUpdate}>Save</button>
-        <button onClick={handleDelete}>Delete</button>
+        <Button skin={"success"} onClick={handleUpdate}>
+          Save
+        </Button>
+        <Button skin={"danger"} onClick={handleDelete}>
+          Delete
+        </Button>
       </form>
     </div>
   );

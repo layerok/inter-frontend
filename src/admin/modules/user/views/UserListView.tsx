@@ -49,7 +49,11 @@ export function UserListRoute() {
       searchParams.append(UserQueryParams.Modal, UserModals.Edit);
       setSearchParams(searchParams);
     };
-    return <button onClick={openDetailedView}>Edit</button>;
+    return (
+      <Button skin={"info"} onClick={openDetailedView}>
+        Edit
+      </Button>
+    );
   };
 
   const columns: ColDef<UserRowModel>[] = [

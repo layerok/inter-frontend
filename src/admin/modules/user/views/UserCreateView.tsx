@@ -7,6 +7,7 @@ import {
   userListPath,
   UserRoles,
 } from "src/admin/modules/user/user.constants.ts";
+import { Button } from "src/components/Button/Button.tsx";
 
 export function UserCreateRoute() {
   const params = useParams();
@@ -110,7 +111,9 @@ export function UserCreateRoute() {
             ))}
           </select>
         </div>
-        <button onClick={handleCreate}>Create</button>
+        <Button skin="success" onClick={handleCreate}>
+          Create
+        </Button>
       </form>
     </div>
   );

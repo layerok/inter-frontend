@@ -1,4 +1,5 @@
 import { ChangeEventHandler, useState } from "react";
+import { Button } from "src/components/Button/Button.tsx";
 
 const clamp = (value: number, min: number, max: number) => {
   return Math.min(Math.max(value, min), max);
@@ -26,13 +27,17 @@ export const Pagination = ({
     if (editMode) {
       setDraftPage(value);
     } else {
-      onPageChange?.(clamp(draftPage, 1, max));
+      const page = clamp(draftPage, 1, max);
+      setDraftPage(page);
+      onPageChange?.(page);
     }
   };
   const handleInputBlur = () => {
     setEditMode(false);
+    setDraftPage(page);
   };
   const handleInputFocus = () => {
+    setDraftPage(page);
     setEditMode(true);
   };
   const isDecrementButtonDisabled = page === 1;
@@ -40,9 +45,13 @@ export const Pagination = ({
 
   return (
     <div style={rootStyles}>
-      <button disabled={isDecrementButtonDisabled} onClick={handleDecrement}>
+      <Button
+        skin="cyan"
+        disabled={isDecrementButtonDisabled}
+        onClick={handleDecrement}
+      >
         &lt;
-      </button>
+      </Button>
       <input
         onBlur={handleInputBlur}
         onFocus={handleInputFocus}
@@ -51,9 +60,13 @@ export const Pagination = ({
         value={editMode ? draftPage : page}
         onChange={handleInputChange}
       />
-      <button disabled={isIncrementButtonDisabled} onClick={handleIncrement}>
+      <Button
+        skin="cyan"
+        disabled={isIncrementButtonDisabled}
+        onClick={handleIncrement}
+      >
         &gt;
-      </button>
+      </Button>
     </div>
   );
 };
