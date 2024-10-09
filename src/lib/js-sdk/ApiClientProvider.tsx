@@ -57,7 +57,7 @@ export const ApiClientProvider = ({
     };
 
     const id = createAuthRefreshInterceptor(client, onUnauthenticated, {
-      statusCodes: [401],
+      statusCodes: [401, 403],
     });
     return () => client.interceptors.request.eject(id);
   }, [client, navigate]);

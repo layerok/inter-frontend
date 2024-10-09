@@ -16,16 +16,35 @@ import {
 import { invariant } from "src/utils/invariant.ts";
 import { Button } from "src/components/Button/Button.tsx";
 
+type FormValues = {
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+};
+
 export function UserShowRoute() {
   const [searchParams] = useSearchParams();
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const id = searchParams.get(UserQueryParams.Id);
+
+  const [values, setValues] = useState<FormValues>({
+    name: "",
+    email: "",
+    password: "",
+    role: "",
+  });
+
+  const handleChange: ChangeEventHandler<any> = (e) => {
+    const name = (e.currentTarget || e.target).name;
+    const value = (e.currentTarget || e.target).value;
+    setValues((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   invariant(!!id, "user id should be present in search parameters");
 
@@ -71,24 +90,12 @@ export function UserShowRoute() {
 
   useEffect(() => {
     if (userData) {
-      setName(userData.data.name);
-      setRole(userData.data.role);
-      setEmail(userData.data.email);
+      setValues((prev) => ({
+        ...prev,
+        ...userData.data,
+      }));
     }
   }, [userData]);
-
-  const handleNameChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setName(e.currentTarget.value);
-  };
-  const handleEmailChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setEmail(e.currentTarget.value);
-  };
-  const handlePasswordChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setPassword(e.currentTarget.value);
-  };
-  const handleRoleChange: ChangeEventHandler<HTMLSelectElement> = (e) => {
-    setPassword(e.currentTarget.value);
-  };
 
   const handleDelete = () => {
     deleteUser(
@@ -111,9 +118,7 @@ export function UserShowRoute() {
         params: {
           user: id,
         },
-        data: {
-          name,
-        },
+        data: values,
       },
       {
         onSuccess: () => {
@@ -136,24 +141,24 @@ export function UserShowRoute() {
       <form style={formStyles} onSubmit={handleFormSubmit}>
         <div style={controlStyle}>
           <label style={labelStyle}>Name</label>
-          <input name={"name"} value={name} onChange={handleNameChange} />
+          <input name={"name"} value={values.name} onChange={handleChange} />
         </div>
         <div style={controlStyle}>
           <label style={labelStyle}>Email</label>
-          <input name={"email"} value={email} onChange={handleEmailChange} />
+          <input name={"email"} value={values.email} onChange={handleChange} />
         </div>
 
         <div style={controlStyle}>
           <label style={labelStyle}>Password</label>
           <input
             name={"password"}
-            value={password}
-            onChange={handlePasswordChange}
+            value={values.password}
+            onChange={handleChange}
           />
         </div>
         <div style={controlStyle}>
           <label style={labelStyle}>Role</label>
-          <select name={"role"} value={role} onChange={handleRoleChange}>
+          <select name={"role"} value={values.role} onChange={handleChange}>
             <option value={""}>Select role</option>
             {[UserRoles.Admin, UserRoles.Moderator].map((role) => (
               <option key={role} value={role}>

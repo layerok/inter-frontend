@@ -8,30 +8,40 @@ import {
   UserRoles,
 } from "src/admin/modules/user/user.constants.ts";
 import { Button } from "src/components/Button/Button.tsx";
+import axios from "axios";
+
+type FormValues = {
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+};
 
 export function UserCreateRoute() {
   const params = useParams();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
+
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [values, setValues] = useState<FormValues>({
+    name: "",
+    email: "",
+    password: "",
+    role: "",
+  });
+  const [errors, setErrors] = useState<Partial<FormValues>>({
+    name: undefined,
+    email: undefined,
+    password: undefined,
+    role: undefined,
+  });
 
-  const handleNameChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setName(e.currentTarget.value);
-  };
-
-  const handleEmailChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setEmail(e.currentTarget.value);
-  };
-
-  const handlePasswordChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setPassword(e.currentTarget.value);
-  };
-
-  const handleRoleChange: ChangeEventHandler<HTMLSelectElement> = (e) => {
-    setRole(e.currentTarget.value);
+  const handleChange: ChangeEventHandler<any> = (e) => {
+    const name = (e.currentTarget || e.target).name;
+    const value = (e.currentTarget || e.target).value;
+    setValues((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const { mutate: createUser } = useMutation({
@@ -42,6 +52,22 @@ export function UserCreateRoute() {
         refetchType: "all",
       });
     },
+    onError: (e) => {
+      if (!axios.isAxiosError(e)) {
+        return;
+      }
+      const errors = e.response?.data.errors || {};
+      const err = Object.keys(errors).reduce(
+        (acc, field) => ({
+          ...acc,
+          [field]: errors[field][0],
+        }),
+        {},
+      );
+      console.log(err, errors);
+
+      setErrors(err);
+    },
   });
 
   const handleCreate = () => {
@@ -50,12 +76,7 @@ export function UserCreateRoute() {
         params: {
           user: params.id!,
         },
-        data: {
-          name,
-          email,
-          password,
-          role,
-        },
+        data: values,
       },
       {
         onSuccess: () => {
@@ -77,18 +98,20 @@ export function UserCreateRoute() {
           <input
             placeholder={"name"}
             name={"name"}
-            value={name}
-            onChange={handleNameChange}
+            value={values.name}
+            onChange={handleChange}
           />
+          {errors.name && <span style={errorStyle}>{errors.name}</span>}
         </div>
         <div style={controlStyle}>
           <label style={labelStyle}>Email</label>
           <input
             placeholder={"email"}
             name={"email"}
-            value={email}
-            onChange={handleEmailChange}
+            value={values.email}
+            onChange={handleChange}
           />
+          {errors.email && <span style={errorStyle}>{errors.email}</span>}
         </div>
 
         <div style={controlStyle}>
@@ -96,13 +119,14 @@ export function UserCreateRoute() {
           <input
             placeholder={"password"}
             name={"password"}
-            value={password}
-            onChange={handlePasswordChange}
+            value={values.password}
+            onChange={handleChange}
           />
+          {errors.password && <span style={errorStyle}>{errors.password}</span>}
         </div>
         <div style={controlStyle}>
           <label style={labelStyle}>Role</label>
-          <select name={"role"} value={role} onChange={handleRoleChange}>
+          <select name={"role"} value={values.role} onChange={handleChange}>
             <option value={""}>Select role</option>
             {[UserRoles.Admin, UserRoles.Moderator].map((role) => (
               <option key={role} value={role}>
@@ -110,6 +134,7 @@ export function UserCreateRoute() {
               </option>
             ))}
           </select>
+          {errors.role && <span style={errorStyle}>{errors.role}</span>}
         </div>
         <Button skin="success" onClick={handleCreate}>
           Create
@@ -130,6 +155,11 @@ const labelStyle = {
 
 const rootStyle = {
   padding: 20,
+};
+
+const errorStyle = {
+  color: "red",
+  fontSize: 10,
 };
 
 const formStyles = {

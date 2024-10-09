@@ -103,7 +103,9 @@ export function UserListRoute() {
   return (
     <div>
       <div style={toolbarStyles}>
-        <Button onClick={createNewUser}>create new user</Button>
+        <Button skin={"success"} onClick={createNewUser}>
+          create new user
+        </Button>
         <div style={paginationContainer}>
           Showing {showingRange.join("-")} records out of {totalRows}
           <Pagination page={page} max={lastPage} onPageChange={setPage} />
