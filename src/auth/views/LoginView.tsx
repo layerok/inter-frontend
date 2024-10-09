@@ -8,6 +8,7 @@ export const LoginView = () => {
 
   const [email, setEmail] = useState("admin@example.com");
   const [password, setPassword] = useState("password");
+  const [hasError, setHasError] = useState(false);
 
   const { mutate: login } = useLogin();
 
@@ -32,6 +33,9 @@ export const LoginView = () => {
         onSuccess: () => {
           navigate(adminRoutePath);
         },
+        onError: () => {
+          setHasError(true);
+        },
       },
     );
   };
@@ -40,24 +44,40 @@ export const LoginView = () => {
       <div>Login</div>
       <div>
         <form style={formStyles} onSubmit={handleSubmit}>
-          <input
-            value={email}
-            type="email"
-            placeholder="Email"
-            onChange={handleEmailChange}
-          />
-          <input
-            value={password}
-            type="password"
-            placeholder="Password"
-            onChange={handlePasswordChange}
-          />
+          <div style={controlStyle}>
+            <input
+              value={email}
+              type="email"
+              placeholder="Email"
+              onChange={handleEmailChange}
+            />
+            {hasError && <span style={errorStyle}>Not found</span>}
+          </div>
+          <div style={controlStyle}>
+            <input
+              value={password}
+              type="password"
+              placeholder="Password"
+              onChange={handlePasswordChange}
+            />
+          </div>
+
           <button>Login</button>
         </form>
       </div>
     </div>
   );
 };
+
+const errorStyle = {
+  fontSize: 12,
+  color: "red",
+} as const;
+
+const controlStyle = {
+  display: "flex",
+  flexDirection: "column",
+} as const;
 
 const rootStyles = {
   display: "flex",
