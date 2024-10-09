@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import {
   ChangeEventHandler,
   FormEventHandler,
@@ -7,20 +6,31 @@ import {
 } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { userMutations } from "src/admin/modules/user/user.mutations.ts";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { userQueries } from "src/admin/modules/user/user.queries.ts";
-import { userListPath } from "src/admin/modules/user/user.constants.ts";
+import {
+  userListPath,
+  UserQueryParams,
+  UserRoles,
+} from "src/admin/modules/user/user.constants.ts";
+import { invariant } from "src/utils/invariant.ts";
 
 export function UserShowRoute() {
-  const params = useParams();
+  const [searchParams] = useSearchParams();
 
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const id = searchParams.get(UserQueryParams.Id);
+
+  invariant(!!id, "user id should be present in search parameters");
 
   const { data: userData, isLoading } = useQuery({
     ...userQueries.detail({
-      user: params.id!,
+      user: id,
     }),
   });
 
@@ -49,26 +59,46 @@ export function UserShowRoute() {
     },
   });
 
+  const goToList = () => {
+    searchParams.delete(UserQueryParams.Modal);
+    searchParams.delete(UserQueryParams.Id);
+    navigate({
+      pathname: userListPath,
+      search: searchParams.toString(),
+    });
+  };
+
   useEffect(() => {
     if (userData) {
       setName(userData.data.name);
+      setRole(userData.data.role);
+      setEmail(userData.data.email);
     }
   }, [userData]);
 
   const handleNameChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     setName(e.currentTarget.value);
   };
+  const handleEmailChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setEmail(e.currentTarget.value);
+  };
+  const handlePasswordChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setPassword(e.currentTarget.value);
+  };
+  const handleRoleChange: ChangeEventHandler<HTMLSelectElement> = (e) => {
+    setPassword(e.currentTarget.value);
+  };
 
   const handleDelete = () => {
     deleteUser(
       {
         params: {
-          user: params.id!,
+          user: id,
         },
       },
       {
         onSuccess: () => {
-          navigate(userListPath);
+          goToList();
         },
       },
     );
@@ -78,7 +108,7 @@ export function UserShowRoute() {
     updateUser(
       {
         params: {
-          user: params.id!,
+          user: id,
         },
         data: {
           name,
@@ -86,7 +116,7 @@ export function UserShowRoute() {
       },
       {
         onSuccess: () => {
-          navigate(userListPath);
+          goToList();
         },
       },
     );
@@ -101,15 +131,51 @@ export function UserShowRoute() {
   }
 
   return (
-    <div css={detailFormLayout}>
+    <div style={rootStyle}>
       <form style={formStyles} onSubmit={handleFormSubmit}>
-        <input name={"name"} value={name} onChange={handleNameChange} />
+        <div style={controlStyle}>
+          <label style={labelStyle}>Name</label>
+          <input name={"name"} value={name} onChange={handleNameChange} />
+        </div>
+        <div style={controlStyle}>
+          <label style={labelStyle}>Email</label>
+          <input name={"email"} value={email} onChange={handleEmailChange} />
+        </div>
+
+        <div style={controlStyle}>
+          <label style={labelStyle}>Password</label>
+          <input
+            name={"password"}
+            value={password}
+            onChange={handlePasswordChange}
+          />
+        </div>
+        <div style={controlStyle}>
+          <label style={labelStyle}>Role</label>
+          <select name={"role"} value={role} onChange={handleRoleChange}>
+            <option value={""}>Select role</option>
+            {[UserRoles.Admin, UserRoles.Moderator].map((role) => (
+              <option key={role} value={role}>
+                {role}
+              </option>
+            ))}
+          </select>
+        </div>
         <button onClick={handleUpdate}>Save</button>
         <button onClick={handleDelete}>Delete</button>
       </form>
     </div>
   );
 }
+
+const controlStyle = {
+  display: "flex",
+  flexDirection: "column",
+} as const;
+
+const labelStyle = {
+  fontSize: 12,
+} as const;
 
 const formStyles = {
   width: 150,
@@ -118,9 +184,10 @@ const formStyles = {
   flexDirection: "column",
 } as const;
 
-const detailFormLayout = css({
+const rootStyle = {
   flexGrow: 1,
+  padding: 20,
   height: "100%",
   display: "flex",
   flexDirection: "column",
-});
+} as const;

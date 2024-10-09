@@ -69,37 +69,65 @@ export function UserCreateRoute() {
   };
 
   return (
-    <div>
+    <div style={rootStyle}>
       <form style={formStyles} onSubmit={handleFormSubmit}>
-        <input
-          placeholder={"name"}
-          name={"name"}
-          value={name}
-          onChange={handleNameChange}
-        />
-        <input
-          placeholder={"email"}
-          name={"email"}
-          value={email}
-          onChange={handleEmailChange}
-        />
-        <input
-          placeholder={"password"}
-          name={"password"}
-          value={password}
-          onChange={handlePasswordChange}
-        />
-        <select name={"role"} value={role} onChange={handleRoleChange}>
-          <option value={""}>Select role</option>
-          {[UserRoles.Admin, UserRoles.Moderator].map((role) => (
-            <option value={role}>{role}</option>
-          ))}
-        </select>
+        <div style={controlStyle}>
+          <label style={labelStyle}>Name</label>
+          <input
+            placeholder={"name"}
+            name={"name"}
+            value={name}
+            onChange={handleNameChange}
+          />
+        </div>
+        <div style={controlStyle}>
+          <label style={labelStyle}>Email</label>
+          <input
+            placeholder={"email"}
+            name={"email"}
+            value={email}
+            onChange={handleEmailChange}
+          />
+        </div>
+
+        <div style={controlStyle}>
+          <label style={labelStyle}>Password</label>
+          <input
+            placeholder={"password"}
+            name={"password"}
+            value={password}
+            onChange={handlePasswordChange}
+          />
+        </div>
+        <div style={controlStyle}>
+          <label style={labelStyle}>Role</label>
+          <select name={"role"} value={role} onChange={handleRoleChange}>
+            <option value={""}>Select role</option>
+            {[UserRoles.Admin, UserRoles.Moderator].map((role) => (
+              <option key={role} value={role}>
+                {role}
+              </option>
+            ))}
+          </select>
+        </div>
         <button onClick={handleCreate}>Create</button>
       </form>
     </div>
   );
 }
+
+const controlStyle = {
+  display: "flex",
+  flexDirection: "column",
+} as const;
+
+const labelStyle = {
+  fontSize: 12,
+} as const;
+
+const rootStyle = {
+  padding: 20,
+};
 
 const formStyles = {
   width: 150,

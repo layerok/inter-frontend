@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "src/components/Button/Button.tsx";
 import { ColDef, Table } from "src/components/Table/Table.tsx";
 import { useQuery } from "@tanstack/react-query";
@@ -6,8 +6,8 @@ import { userQueries } from "src/admin/modules/user/user.queries.ts";
 import { useState } from "react";
 import { Pagination } from "src/components/Pagination/Pagination.tsx";
 import {
-  userCreatePath,
-  userShowPath,
+  UserModals,
+  UserQueryParams,
 } from "src/admin/modules/user/user.constants.ts";
 
 type UserRowModel = {
@@ -18,45 +18,9 @@ type UserRowModel = {
   actions: string;
 };
 
-const ActionCell = (_: any, row: UserRowModel) => {
-  const navigate = useNavigate();
-  const openDetailedView = () => {
-    navigate(userShowPath.replace(":id", row.id));
-  };
-  return <button onClick={openDetailedView}>Edit</button>;
-};
-
-const columns: ColDef<UserRowModel>[] = [
-  {
-    field: "id",
-    name: "ID",
-    width: 40,
-  },
-  {
-    field: "name",
-    name: "Name",
-    width: 150,
-  },
-  {
-    field: "email",
-    name: "Email",
-    width: 150,
-  },
-  {
-    field: "role",
-    name: "Role",
-    width: 150,
-  },
-  {
-    field: "actions",
-    name: "Actions",
-    width: 150,
-    renderCell: ActionCell,
-  },
-] as const;
-
 export function UserListRoute() {
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [page, setPage] = useState(1);
   const [pageSize] = useState(5);
   const { data: userData, isLoading } = useQuery(
@@ -71,10 +35,6 @@ export function UserListRoute() {
   const lastPage = userData?.meta.last_page ?? 1;
   const totalRows = userData?.meta?.total ?? 0;
 
-  if (isLoading) {
-    return "...loading";
-  }
-
   const rows = (userData?.data || []).map((resource) => ({
     id: resource.id,
     name: resource.name,
@@ -83,8 +43,47 @@ export function UserListRoute() {
     actions: "",
   }));
 
-  const goToCreatePage = () => {
-    navigate(userCreatePath);
+  const renderActionCell = (_: any, row: UserRowModel) => {
+    const openDetailedView = () => {
+      searchParams.append(UserQueryParams.Id, row.id);
+      searchParams.append(UserQueryParams.Modal, UserModals.Edit);
+      setSearchParams(searchParams);
+    };
+    return <button onClick={openDetailedView}>Edit</button>;
+  };
+
+  const columns: ColDef<UserRowModel>[] = [
+    {
+      field: "id",
+      name: "ID",
+      width: 40,
+    },
+    {
+      field: "name",
+      name: "Name",
+      width: 150,
+    },
+    {
+      field: "email",
+      name: "Email",
+      width: 150,
+    },
+    {
+      field: "role",
+      name: "Role",
+      width: 150,
+    },
+    {
+      field: "actions",
+      name: "Actions",
+      width: 150,
+      renderCell: renderActionCell,
+    },
+  ] as const;
+
+  const createNewUser = () => {
+    searchParams.append(UserQueryParams.Modal, UserModals.Create);
+    setSearchParams(searchParams);
   };
 
   const showingRange = calculateShowingRecordsRange({
@@ -93,10 +92,14 @@ export function UserListRoute() {
     totalRows,
   });
 
+  if (isLoading) {
+    return "...loading";
+  }
+
   return (
     <div>
       <div style={toolbarStyles}>
-        <Button onClick={goToCreatePage}>create new user</Button>
+        <Button onClick={createNewUser}>create new user</Button>
         <div style={paginationContainer}>
           Showing {showingRange.join("-")} records out of {totalRows}
           <Pagination page={page} max={lastPage} onPageChange={setPage} />

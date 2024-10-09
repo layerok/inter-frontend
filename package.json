@@ -14,6 +14,7 @@
   "dependencies": {
     "@emotion/babel-plugin": "^11.11.0",
     "@emotion/react": "^11.11.4",
+    "@floating-ui/react": "^0.26.24",
     "@intersog/js-sdk": "0.0.0",
     "@tanstack/react-query": "5.17.15",
     "@tanstack/react-query-devtools": "^5.59.0",

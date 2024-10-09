@@ -19,8 +19,8 @@ export const Menu = () => {
       </Link>
       {items
         .filter((item) => user && item.isAllowed(user.data))
-        .map((item) => (
-          <Link css={linkStyles} to={userListPath}>
+        .map((item, index) => (
+          <Link key={index} css={linkStyles} to={userListPath}>
             {item.title}
           </Link>
         ))}
